@@ -1,39 +1,33 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
-// Configuration
+// Cloudinary config
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  cloud_name: "drcnwh10s",
+  api_key: "461919138361947",
+  api_secret: "0Q-wy_9BNUV_sqls-sGhxPgMfRs"
 });
 
-
 const uploadOnCloudinary = async (localFilePath) => {
-    try {
-        if(!localFilePath) return null;
-
-         const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
-         })
-
-         return response
-    } catch (error) {
-        fs.unlinkSync(localFilePath)
-        return null;
+  try {
+    if (!localFilePath) {
+      console.log("❌ No file path provided to upload.");
+      return null;
     }
-}
 
-export { uploadOnCloudinary }
+    console.log("📤 Uploading to Cloudinary:", localFilePath);
 
-// const uploadResult = await cloudinary.uploader
-//        .upload(
-//            'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-//                public_id: 'shoes',
-//            }
-//        )
-//        .catch((error) => {
-//            console.log(error);
-//        });
-    
-//     console.log(uploadResult);
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "auto"
+    });
+
+    console.log("✅ Upload successful:", response.url);
+    return response;
+  } catch (error) {
+    console.error("❌ Cloudinary upload error:", error.message); // 👈 important
+    fs.unlinkSync(localFilePath); // delete local file on error
+    return null;
+  }
+};
+
+export { uploadOnCloudinary };
